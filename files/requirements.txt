@@ -1,5 +1,4 @@
-openai>=1.40.0
-pyodbc>=5.1.0
-python-dotenv>=1.0.1
-streamlit>=1.38.0
-pandas>=2.2.0
+openai>=1.55.0,<3
+python-dotenv>=1.0.0,<2
+pyodbc>=5.0.0,<6
+sqlglot==30.30.0

@@ -1,0 +1,30 @@
+# Variables de entorno y secretos locales
+.env
+.env.*
+!.env.example
+secrets/
+secrets.json
+credentials.json
+
+# Claves privadas y certificados con clave
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Entornos virtuales de Python
+.venv/
+venv/
+
+# Archivos generados y cachés
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# Logs locales
+logs/
+*.log
