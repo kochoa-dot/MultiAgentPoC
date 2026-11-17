@@ -1,0 +1,74 @@
+# Manifiesto azd del Hosted Agent.
+#
+# No se edita a mano para publicar: scripts/publish-agent.ps1 genera una copia en
+# .build/agent-publish/ con scripts/package.py y ejecuta «azd deploy». La copia:
+#   - sustituye __HOSTED_AGENT_NAME__, __AUTH_SCHEME__ y __SQL_SECRET_CONNECTION__;
+#   - con agentHosting.mode=container cambia codeConfiguration por «image: <acr>/...@sha256:...»
+#     (la imagen de docker/agent.Dockerfile probada en local; Learn: no combinar ambos);
+#   - quita las variables que no se usan (p. ej. SQL_PASSWORD si no hay conexión de secretos).
+# La infraestructura se crea con Bicep (scripts/deploy-infra.ps1); no use «azd provision».
+#
+# Las variables ${...} se resuelven desde el ambiente azd que prepara el script.
+# ${{connections.<nombre>.credentials.<campo>}} lo resuelve Foundry al iniciar la sesión con
+# una conexión CustomKeys del proyecto (scripts/set-sql-secret.ps1): el secreto no pasa por azd.
+# Se escribe «$${{...}}»: azd 1.37 expande el bloque env y trata «$$» como un «$» literal
+# (sin escapar falla con «expanding SQL_PASSWORD: unable to parse variable name»).
+# No declare variables FOUNDRY_* ni AGENT_*: la plataforma las reserva e inyecta.
+name: text2sql-foundry
+requiredVersions:
+  azd: ">=1.27.1"
+  extensions:
+    # azure.ai.agents aporta «host: azure.ai.agent»; azure.ai.projects, «host: azure.ai.project».
+    azure.ai.agents: ">=1.0.0-beta.8"
+    azure.ai.projects: ">=1.0.0-beta.4"
+services:
+  ai-project:
+    host: azure.ai.project
+    endpoint: ${FOUNDRY_PROJECT_ENDPOINT}
+  starter-agent:
+    host: azure.ai.agent
+    uses:
+      - ai-project
+    project: agent
+    kind: hosted
+    name: __HOSTED_AGENT_NAME__
+    description: Agente Text-to-SQL sobre una vista autorizada (genera, valida y opcionalmente ejecuta T-SQL).
+    protocols:
+      - protocol: invocations
+        version: 2.0.0
+    agentEndpoint:
+      protocols:
+        - invocations
+      authorizationSchemes:
+        - type: __AUTH_SCHEME__
+    env:
+      PYTHONNOUSERSITE: "1"
+      STARTER_RESPONDER: ${STARTER_RESPONDER}
+      MODEL_ENDPOINT: ${MODEL_ENDPOINT}
+      MODEL_DEPLOYMENT_NAME: ${MODEL_DEPLOYMENT_NAME}
+      FILES_MODE: ${FILES_MODE}
+      STORAGE_ACCOUNT_URL: ${STORAGE_ACCOUNT_URL}
+      INPUT_CONTAINER: ${INPUT_CONTAINER}
+      OUTPUT_CONTAINER: ${OUTPUT_CONTAINER}
+      # Text-to-SQL (agent.env). Ningún secreto en azd: la contraseña SQL sale de la conexión del proyecto.
+      SQL_ENGINE: ${SQL_ENGINE}
+      SQL_VIEW_SCHEMA: ${SQL_VIEW_SCHEMA}
+      SQL_VIEW_NAME: ${SQL_VIEW_NAME}
+      SQL_MAX_ROWS: ${SQL_MAX_ROWS}
+      SQL_DEFAULT_ROWS: ${SQL_DEFAULT_ROWS}
+      SQL_QUERY_TIMEOUT: ${SQL_QUERY_TIMEOUT}
+      SQL_ODBC_DRIVER: "${SQL_ODBC_DRIVER}"
+      SQL_CONNECTION_STRING: "${SQL_CONNECTION_STRING}"
+      SQL_SERVER: "${SQL_SERVER}"
+      SQL_DATABASE: "${SQL_DATABASE}"
+      SQL_USER: "${SQL_USER}"
+      SQL_PASSWORD: "$${{connections.__SQL_SECRET_CONNECTION__.credentials.SQL_PASSWORD}}"
+      TEXT2SQL_EXECUTE: ${TEXT2SQL_EXECUTE}
+    codeConfiguration:
+      runtime: python_3_13
+      entryPoint: main.py
+      dependencyResolution: remote_build
+    container:
+      resources:
+        cpu: "0.5"
+        memory: 1Gi

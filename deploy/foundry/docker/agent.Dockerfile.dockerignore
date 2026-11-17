@@ -1,0 +1,6 @@
+# Exclusiones del contexto agent/ para docker/agent.Dockerfile (BuildKit usa <Dockerfile>.dockerignore).
+**/__pycache__
+**/*.pyc
+.local-files
+.env
+.env.*

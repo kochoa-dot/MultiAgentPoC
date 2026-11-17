@@ -1,0 +1,28 @@
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.build/
+.local-files/
+.azure/
+# Configuración local de Azure CLI (AZURE_CONFIG_DIR) con Bicep del proyecto; puede contener sesión.
+.azure-local/
+infra/parameters/*.bicepparam
+!infra/parameters/*.example.bicepparam
+*.zip
+
+# Configuración local y de publicación (pueden contener identificadores o credenciales)
+.env
+.env.*
+!.env.example
+agent.env
+!agent.env.example
+secrets/
+*.key
+*.pem
+*.pfx
+
+# Registros
+logs/
+*.log

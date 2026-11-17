@@ -1,0 +1,14 @@
+# Configuración de herramientas locales. El agente y la web se publican como
+# carpetas con su propio requirements.txt; este archivo no se empaqueta.
+[project]
+name = "text2sql-foundry"
+version = "0.1.0"
+description = "Agente Text-to-SQL publicado como Hosted Agent de Microsoft Foundry, con Streamlit de pruebas"
+requires-python = ">=3.12"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q -p no:cacheprovider --basetemp=.build/pytest-tmp"
+markers = [
+  "azure: pruebas que requieren recursos reales de Azure (no se ejecutan por defecto)",
+]

@@ -1,0 +1,7 @@
+# Dependencias directas de la interfaz (rangos compatibles).
+# Oryx instala el requirements.txt del ZIP. El script de empaquetado usa
+# requirements.lock.txt (versiones exactas para Linux) si existe.
+streamlit>=1.67,<2
+azure-identity>=1.27,<2
+azure-storage-blob>=12.31,<13
+requests>=2.34,<3

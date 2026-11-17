@@ -88,60 +88,62 @@ class Configuracion:
         )
 
 
+# Datos de prueba sintéticos: los identificadores de suministro (0099000001...) y ruta (99000001) de los
+# ejemplos no corresponden a clientes ni rutas reales.
 def ejemplos_sql(config: Configuracion) -> list[tuple[str, str]]:
     v = config.nombre_sql
     fecha = "TRY_CONVERT(date, CONVERT(varchar(8), v.[FeLectEfec], 112), 112)"
     return [
         (
-            "Quiero las coordenadas disponibles del suministro 0020009838",
+            "Quiero las coordenadas disponibles del suministro 0099000001",
             f"SELECT DISTINCT TOP 50 v.[Pue.sumin.], v.[X], v.[Y], "
             f"v.[DS latitud], v.[DS longitud] FROM {v} AS v "
-            "WHERE v.[Pue.sumin.] = '0020009838';",
+            "WHERE v.[Pue.sumin.] = '0099000001';",
         ),
         (
-            "Datos del medidor del suministro 0020009838",
+            "Datos del medidor del suministro 0099000001",
             f"SELECT DISTINCT TOP 50 v.[Pue.sumin.], v.[Equipo], v.[Numero de serie], "
             f"v.[Fabricante del activo fijo], v.[Denominacion de tipo], "
             f"v.[Ubicacion del aparato] FROM {v} AS v "
-            "WHERE v.[Pue.sumin.] = '0020009838';",
+            "WHERE v.[Pue.sumin.] = '0099000001';",
         ),
         (
-            "Dirección del suministro 0020009838",
+            "Dirección del suministro 0099000001",
             f"SELECT DISTINCT TOP 50 v.[Pue.sumin.], v.[Poblacion], v.[Distrito], "
-            f"v.[Calle], v.[No.] FROM {v} AS v WHERE v.[Pue.sumin.] = '0020009838';",
+            f"v.[Calle], v.[No.] FROM {v} AS v WHERE v.[Pue.sumin.] = '0099000001';",
         ),
         (
-            "No me aparece este medidor en terreno, suministro 0020009838",
+            "No me aparece este medidor en terreno, suministro 0099000001",
             f"SELECT TOP 50 v.[Pue.sumin.], v.[Equipo], v.[Numero de serie], "
             f"v.[MOB Orden], v.[UM], v.[Num.], v.[Status lectura], v.[NotaL], "
             f"v.[Desc NotaL], v.[Poblacion], v.[Distrito], v.[Calle], v.[No.], "
             f"v.[X], v.[Y], v.[DS latitud], v.[DS longitud] FROM {v} AS v "
-            "WHERE v.[Pue.sumin.] = '0020009838';",
+            "WHERE v.[Pue.sumin.] = '0099000001';",
         ),
         (
-            "Notas de lectura registradas para el suministro 0020009838",
+            "Notas de lectura registradas para el suministro 0099000001",
             f"SELECT TOP 50 v.[MOB Orden], v.[Pue.sumin.], v.[FeLectEfec], v.[UM], "
             f"v.[NotaL], v.[Desc NotaL], v.[Leer texto] FROM {v} AS v "
-            "WHERE v.[Pue.sumin.] = '0020009838';",
+            "WHERE v.[Pue.sumin.] = '0099000001';",
         ),
         (
-            "Última lectura KWH registrada del suministro 0020009838",
+            "Última lectura KWH registrada del suministro 0099000001",
             f"SELECT TOP 1 v.[Pue.sumin.], v.[Equipo], v.[Num.], v.[UM], "
             f"v.[Resultado de lectura interno], v.[FeLectEfec], v.[HoraLect], "
-            f"v.[Status lectura] FROM {v} AS v WHERE v.[Pue.sumin.] = '0020009838' "
+            f"v.[Status lectura] FROM {v} AS v WHERE v.[Pue.sumin.] = '0099000001' "
             f"AND v.[UM] = 'KWH' AND {fecha} IS NOT NULL "
             f"ORDER BY {fecha} DESC, v.[HoraLect] DESC, v.[ID interno doc.lect.] DESC;",
         ),
         (
-            "Cuántos suministros distintos tiene la ruta 50592308",
+            "Cuántos suministros distintos tiene la ruta 99000001",
             f"SELECT COUNT(DISTINCT v.[Pue.sumin.]) AS CantidadSuministros "
-            f"FROM {v} AS v WHERE v.[Ruta] = '50592308';",
+            f"FROM {v} AS v WHERE v.[Ruta] = '99000001';",
         ),
-        ("Quiero croquis del suministro 0020009838", "NO_RESPONDIBLE"),
+        ("Quiero croquis del suministro 0099000001", "NO_RESPONDIBLE"),
         ("Última lectura facturada y fecha de facturación", "NO_RESPONDIBLE"),
         ("Cuál nota debo colocar si no encuentro el medidor", "NO_RESPONDIBLE"),
-        ("Ha tenido reclamos el suministro 0020009838", "NO_RESPONDIBLE"),
-        ("Cuál es el contiguo físico del suministro 0020009838", "NO_RESPONDIBLE"),
+        ("Ha tenido reclamos el suministro 0099000001", "NO_RESPONDIBLE"),
+        ("Cuál es el contiguo físico del suministro 0099000001", "NO_RESPONDIBLE"),
     ]
 
 

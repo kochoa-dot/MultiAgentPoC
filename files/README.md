@@ -46,6 +46,8 @@ Adaptación de `text2sql_core.py` a las 58 columnas del CSV `vw_chatbot_mom_2026
 
 La muestra tiene **58 columnas, 10 filas y 8 órdenes/suministros distintos**. Una orden tiene registros FP, KW y KWH. No deben contarse como tres suministros ni sumarse entre sí. Los nombres y valores del CSV solo se usan para conocer la estructura; no se envía el archivo de clientes al modelo. El prompt contiene un identificador de ejemplo y ningún nombre de cliente.
 
+> **Datos de prueba.** Los identificadores que aparecen en ejemplos, pruebas y en `instrucciones_foundry.txt` (suministro `0099000001`, ruta `99000001`) son sintéticos: conservan el formato real (10 y 8 dígitos, ceros iniciales) pero no corresponden a clientes. Para consultar la vista real, sustitúyalos por un identificador existente.
+
 En X/Y se observan valores compatibles con latitud/longitud en grados; no son los valores Lambert del Excel demo. No debe aplicarse la interpretación Lambert de ese archivo a estas columnas sin confirmación. `FeLectEfec` no es fecha de facturación, `Lote` no confirma fecha de lectura y `Ciclo datos tecnicos` no confirma ciclo de facturación.
 
 ## Instalación y configuración local (PowerShell)
@@ -63,7 +65,7 @@ Edita `.env`: configura el esquema y la vista confirmados, el despliegue y las c
 Generar SQL sin conectarse a la base:
 
 ```powershell
-.\.venv\Scripts\python.exe text2sql_core.py "Quiero las coordenadas disponibles del suministro 0020009838"
+.\.venv\Scripts\python.exe text2sql_core.py "Quiero las coordenadas disponibles del suministro 0099000001"
 ```
 
 Consultar primero los metadatos reales con una cuenta autorizada:
@@ -75,7 +77,7 @@ Consultar primero los metadatos reales con una cuenta autorizada:
 Solo después de confirmar motor, esquema, vista, permisos y tipos, ejecutar:
 
 ```powershell
-.\.venv\Scripts\python.exe text2sql_core.py "Datos del medidor del suministro 0020009838" --ejecutar
+.\.venv\Scripts\python.exe text2sql_core.py "Datos del medidor del suministro 0099000001" --ejecutar
 ```
 
 Desde otra interfaz:
@@ -83,7 +85,7 @@ Desde otra interfaz:
 ```python
 from text2sql_core import responder_pregunta
 
-resultado = responder_pregunta("Datos del medidor del suministro 0020009838")
+resultado = responder_pregunta("Datos del medidor del suministro 0099000001")
 print(resultado.to_dict())  # SQL generado/validado; ejecutado=False
 
 # Ejecución opcional, en un backend autorizado y con cuenta de solo lectura:
@@ -100,7 +102,7 @@ Este cambio adapta el núcleo local; no crea ni publica un recurso de Foundry ni
 .\.venv\Scripts\python.exe text2sql_core.py --exportar-prompt instrucciones_foundry.txt
 ```
 
-El archivo de instrucciones incluido tiene `REEMPLAZAR_ESQUEMA` como marcador. Regénéralo después de configurar `.env` antes de usarlo en Foundry. Crea un Prompt agent con esas instrucciones y tu modelo desplegado. En esta fase solo genera SQL; no le des una herramienta para ejecutar todavía. La validación AST continúa siendo código del backend; copiar el prompt no instala ese validador en Foundry.
+El archivo de instrucciones incluido tiene `REEMPLAZAR_ESQUEMA` como marcador (se generó con `SQL_VIEW_SCHEMA=REEMPLAZAR_ESQUEMA`). Regénéralo después de configurar `.env` antes de usarlo en Foundry. Crea un Prompt agent con esas instrucciones y tu modelo desplegado. En esta fase solo genera SQL; no le des una herramienta para ejecutar todavía. La validación AST continúa siendo código del backend; copiar el prompt no instala ese validador en Foundry.
 
 Cuando se agreguen herramientas, `get_database_schema` debe recuperar solo metadatos autorizados y `execute_readonly_query` debe validar de nuevo el SQL y el alcance de datos del usuario. Registrar una función no hospeda automáticamente el código Python. El cambio a agentes no necesita recrear tablas ni entrenar un modelo con registros de clientes.
 

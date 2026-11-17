@@ -217,3 +217,47 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ---------------------------------------------------------------------------
+# Reglas añadidas para deploy/foundry (Hosted Agent de Microsoft Foundry)
+# deploy/foundry/.gitignore repite las específicas del proyecto.
+# ---------------------------------------------------------------------------
+
+# Configuración local y de publicación (identificadores o credenciales)
+.env.*
+!.env.example
+agent.env
+!agent.env.example
+secrets/
+secrets.json
+credentials.json
+*.key
+*.pem
+*.pfx
+*.p12
+
+# Parámetros reales de Bicep (suscripción, tenant, usuarios); solo se versionan los de ejemplo
+deploy/foundry/infra/parameters/*.bicepparam
+!deploy/foundry/infra/parameters/*.example.bicepparam
+*.bicepparam.bak
+
+# Estado local de Azure CLI / azd (sesión, Bicep local, telemetría)
+.azure/
+.azure-local/
+
+# Artefactos de compilación, empaquetado y pruebas
+deploy/foundry/.build/
+*.zip
+
+# Archivos generados localmente por el agente (entradas/salidas, resultado.json)
+.local-files/
+
+# Registros
+logs/
+
+# Exportaciones de datos (no subir datos de clientes)
+*.csv
+*.tsv
+*.xlsx
+*.xls
+*.parquet

@@ -1,0 +1,6 @@
+# Entorno local de desarrollo y pruebas (no se publica).
+-r agent/requirements.txt
+-r web/requirements.txt
+pytest>=9,<10
+httpx>=0.28,<1
+uv>=0.9,<1
