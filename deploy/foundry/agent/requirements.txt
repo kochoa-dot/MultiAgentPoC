@@ -1,0 +1,17 @@
+# Dependencias directas del agente (rangos compatibles).
+# Foundry remote_build instala el requirements.txt del ZIP. El script de
+# empaquetado usa requirements.lock.txt (versiones exactas para Linux) si existe.
+azure-ai-agentserver-invocations>=1.3.0,<2
+azure-identity>=1.27,<2
+azure-storage-blob>=12.31,<13
+openai>=3.49,<4
+# No se importa en el código: la telemetría de azure-ai-agentserver-core (microsoft-opentelemetry ->
+# opentelemetry-instrumentation-openai-v2) hace «from httpx import URL», pero no declara httpx y
+# openai 3.x ya solo depende de httpx2. Sin él, las llamadas al modelo no generan trazas.
+httpx>=0.28,<0.29
+# text2sql_core.py (mismas restricciones que el agente original, salvo openai: ver CONFIGURATION.md).
+sqlglot==30.30.0
+python-dotenv>=1.2,<2
+# Solo se importa al ejecutar SQL (TEXT2SQL_EXECUTE=true con backend odbc). La wheel Linux no
+# incluye unixODBC ni Microsoft ODBC Driver 18: ver TROUBLESHOOTING.md antes de ejecutar en Foundry.
+pyodbc>=5.2,<6

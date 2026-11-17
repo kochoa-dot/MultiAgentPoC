@@ -1,3 +1,5 @@
+# Datos de prueba sintéticos: los identificadores de suministro (0099000001...) y ruta (99000001) de los
+# ejemplos no corresponden a clientes ni rutas reales.
 import json
 import os
 import subprocess
@@ -40,9 +42,9 @@ class ValidacionSQLTests(unittest.TestCase):
         self.assertIn("TOP 10", core.validar_sql(SELECT, cfg))
 
     def test_preserva_literal_y_ceros(self):
-        sql = SELECT + " WHERE v.[Pue.sumin.] = '0020009838' AND v.[Equipo] = 'DROP; DELETE'"
+        sql = SELECT + " WHERE v.[Pue.sumin.] = '0099000001' AND v.[Equipo] = 'DROP; DELETE'"
         limpio = core.validar_sql(sql, CFG)
-        self.assertIn("'0020009838'", limpio)
+        self.assertIn("'0099000001'", limpio)
         self.assertIn("'DROP; DELETE'", limpio)
 
     def test_alias_en_order_by(self):
@@ -216,10 +218,10 @@ class BaseDeDatosTests(unittest.TestCase):
     def test_lectura_limitada_y_cierre(self, conectar, metadatos):
         cursor = conectar.return_value.cursor.return_value
         cursor.description = [("Pue.sumin.",), ("Equipo",)]
-        cursor.fetchmany.return_value = [("0020009838", "0001")]
+        cursor.fetchmany.return_value = [("0099000001", "0001")]
         columnas, filas = core.ejecutar_sql(SELECT, CFG)
         self.assertEqual(columnas, ["Pue.sumin.", "Equipo"])
-        self.assertEqual(filas[0][0], "0020009838")
+        self.assertEqual(filas[0][0], "0099000001")
         cursor.fetchmany.assert_called_once_with(200)
         cursor.close.assert_called_once()
         conectar.return_value.close.assert_called_once()
